@@ -41,7 +41,7 @@ namespace ConsoleTankGameOnline.Source.Network
                     throw new Exception("Неполучилось создать поток на чтение и/или запись.");
                 }
 
-                Task.Run(ReceiveMessage);
+                Task.Run(ReceivePacket);
 
             }
             catch (Exception ex)
@@ -77,7 +77,7 @@ namespace ConsoleTankGameOnline.Source.Network
             }
         }
 
-        private async Task ReceiveMessage()
+        private async Task ReceivePacket()
         {
             while (true)
             {
