@@ -1,9 +1,10 @@
 ﻿using ConsoleTankGameOnline.Source.Abstract;
+using ConsoleTankGameOnline.Source.Interface;
 using System.Net.Sockets;
 
 namespace ConsoleTankGameOnline.Source.Network
 {
-    public class Client : IDisposable
+    public class Client : INetwork, IDisposable
     {
         public Client(TcpClient client, Server server)
         {
@@ -27,7 +28,7 @@ namespace ConsoleTankGameOnline.Source.Network
         private StreamReader? _reader;
         public StreamWriter? Writer { get; private set; }
 
-        public async void Start()
+        public async Task Start()
         {
             try
             {
@@ -72,7 +73,7 @@ namespace ConsoleTankGameOnline.Source.Network
             }
             finally
             {
-                _server.RemoveClient(this);
+                _server?.RemoveClient(this);
             }
         }
 
@@ -85,13 +86,19 @@ namespace ConsoleTankGameOnline.Source.Network
                     var message = await _reader.ReadLineAsync();
                     var packet = new PacketBase().Deserialize(message);
 
-                    packet.HandlePacket();
+                    packet?.HandlePacket();
                 }
                 catch (Exception ex)
                 {
                     Console.WriteLine($"Client.ReceiveMessage: {ex.Message}");
                 }
             }
+        }
+
+        public async Task SendPacket(PacketBase packet)
+        {
+            await Writer?.WriteLineAsync(packet.Serialize());
+            await Writer?.FlushAsync();
         }
 
         public void Dispose()

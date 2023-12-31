@@ -1,10 +1,11 @@
 ﻿using ConsoleTankGameOnline.Source.Abstract;
+using ConsoleTankGameOnline.Source.Interface;
 using System.Net;
 using System.Net.Sockets;
 
 namespace ConsoleTankGameOnline.Source.Network
 {
-    public class Server : IDisposable
+    public class Server : INetwork, IDisposable
     {
         public Server(int port)
         {

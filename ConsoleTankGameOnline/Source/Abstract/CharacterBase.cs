@@ -34,8 +34,8 @@ namespace ConsoleTankGameOnline.Source.Interface
         {
             var newPosition = new Position();
             var rand = new Random();
-            
-            while (true) 
+
+            while (true)
             {
                 newPosition.X = rand.Next(1, _world.MaxX - Height);
                 newPosition.Y = rand.Next(1, _world.MaxY - Width);

@@ -11,10 +11,8 @@ namespace ConsoleTankGameOnline
         public Program()
         {
             Listener.OnWorldSelected += Listener_OnWorldOpened;
-            Listener.OnPlayerSelected += Listener_OnPlayerSelected;
         }
 
-        private readonly GameStateEnum _state = GameStateEnum.None;
         private GameModeEnum _mode = GameModeEnum.Offline;
         private GameStepEnum _step = GameStepEnum.SelectGameMode;
         private GameOnlineModeEnum _onlineMode = GameOnlineModeEnum.Create;
@@ -252,12 +250,6 @@ namespace ConsoleTankGameOnline
 
                     _word?.AddCharacter(player);
                     _game = new Game(_word);
-
-                    if ((_mode == GameModeEnum.Online) && (_server != null))
-                    {
-                        _server.SendPacket(new PlayerInfo(players[selectedPlayerIndex]));
-                    }
-
                     _step = GameStepEnum.LoadGame;
                     break;
                 }
@@ -267,11 +259,6 @@ namespace ConsoleTankGameOnline
         private void Listener_OnWorldOpened(string path)
         {
             _word = new World(path);
-        }
-
-        private void Listener_OnPlayerSelected(string path)
-        {
-            _word?.AddCharacter(new Player(path, _word));
         }
 
         private void CreateDirectory()
