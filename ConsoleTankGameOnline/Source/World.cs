@@ -7,6 +7,8 @@ namespace ConsoleTankGameOnline.Source
         public World(string map)
         {
             _map = Map(map);
+            MaxX = _map.GetLength(0);
+            MaxY = _map.GetLength(1);
         }
 
         private readonly char[,] _map;
@@ -16,6 +18,8 @@ namespace ConsoleTankGameOnline.Source
         public const string MapPath = "Resurce/Maps";
         public IEnumerable<CharacterBase> Characters => _characters;
         public static bool[,] IsWall;
+        public int MaxX { get; }
+        public int MaxY { get; }
 
         public void Draw()
         {

@@ -6,7 +6,7 @@ namespace ConsoleTankGameOnline.Source
     public class Player : CharacterBase
     {
         public Player(string skin, World world) : base(skin, world)
-        {
+        {    
         }
 
         private Task? _task;

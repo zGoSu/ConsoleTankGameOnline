@@ -15,6 +15,8 @@ namespace ConsoleTankGameOnline.Source.Interface
             Skin = _skins[RotationEnum.Front];
             Weapon = new Weapon(this);
             _world = world;
+
+            SetStartPosition();
         }
 
         private readonly Dictionary<RotationEnum, char[,]> _skins = [];
@@ -27,6 +29,24 @@ namespace ConsoleTankGameOnline.Source.Interface
         public char[,] Skin;
         public readonly Weapon Weapon;
         public const string SkinPath = "Resurce/Skins";
+
+        private void SetStartPosition()
+        {
+            var newPosition = new Position();
+            var rand = new Random();
+            
+            while (true) 
+            {
+                newPosition.X = rand.Next(1, _world.MaxX - Height);
+                newPosition.Y = rand.Next(1, _world.MaxY - Width);
+
+                if (!IsEnemyNearMe(newPosition))
+                {
+                    Position = newPosition;
+                    break;
+                }
+            }
+        }
 
         public abstract void Action();
 
