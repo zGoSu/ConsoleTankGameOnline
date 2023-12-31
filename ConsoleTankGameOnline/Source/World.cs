@@ -1,5 +1,4 @@
 ﻿using ConsoleTankGameOnline.Source.Interface;
-using System.Diagnostics;
 
 namespace ConsoleTankGameOnline.Source
 {

@@ -1,6 +1,5 @@
 ﻿using ConsoleTankGameOnline.Source.Enum;
 using ConsoleTankGameOnline.Source.Structure;
-using System.Diagnostics;
 
 namespace ConsoleTankGameOnline.Source.Interface
 {
