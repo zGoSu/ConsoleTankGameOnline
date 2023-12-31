@@ -4,6 +4,7 @@
     {
         SelectGameMode,
         SelectGameMap,
+        SelectNetwork,
         SelectPlayer,
         LoadGame
     }

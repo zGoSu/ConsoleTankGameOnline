@@ -1,6 +1,8 @@
 ﻿using ConsoleTankGameOnline.Source;
 using ConsoleTankGameOnline.Source.Enum;
 using ConsoleTankGameOnline.Source.Interface;
+using ConsoleTankGameOnline.Source.Network;
+using ConsoleTankGameOnline.Source.Network.Packages;
 
 namespace ConsoleTankGameOnline
 {
@@ -9,9 +11,12 @@ namespace ConsoleTankGameOnline
         private readonly GameStateEnum _state = GameStateEnum.None;
         private GameModeEnum _mode = GameModeEnum.Offline;
         private GameStepEnum _step = GameStepEnum.SelectGameMode;
+        private GameOnlineModeEnum _onlineMode = GameOnlineModeEnum.Create;
         private const char _selectCursor = '→';
         private World? _word;
         private Game? _game;
+        private Server? _server;
+        private Client? _client;
 
         private static void Main(string[] args)
         {
@@ -32,6 +37,8 @@ namespace ConsoleTankGameOnline
             {
                 SelectGameMode();
                 SelectOnlineGameMode();
+                CreateServer();
+                ConnectionToServer();
                 SelectMap();
                 SelectPlayer();
 
@@ -41,11 +48,6 @@ namespace ConsoleTankGameOnline
 
         private void SelectGameMode()
         {
-            if (_state != GameStateEnum.None)
-            {
-                return;
-            }
-
             while (_step == GameStepEnum.SelectGameMode)
             {
                 Console.WriteLine($"SELECT GAME MODE:\n" +
@@ -63,7 +65,7 @@ namespace ConsoleTankGameOnline
 
                 if (keyInfo.Key == ConsoleKey.Enter)
                 {
-                    _step = GameStepEnum.SelectGameMap;
+                    _step = (_mode == GameModeEnum.Offline) ? GameStepEnum.SelectGameMap : GameStepEnum.SelectGameMode;
                     break;
                 }
             }
@@ -76,10 +78,78 @@ namespace ConsoleTankGameOnline
                 return;
             }
 
-            _step = GameStepEnum.SelectGameMode;
-            Console.WriteLine("I'm sorry, but the online mode has not yet been implemented 😔".ToUpper());
-            Console.ReadKey();
-            Console.Clear();
+            while (_step == GameStepEnum.SelectGameMode)
+            {
+                Console.WriteLine($"SELECT ONLINE GAME MODE:\n" +
+                    $"{((_onlineMode == GameOnlineModeEnum.Create) ? _selectCursor : ' ')}1. CREATE A NEW SERVER.\n" +
+                    $"{((_onlineMode == GameOnlineModeEnum.Join) ? _selectCursor : ' ')}2. CONNECT TO AN EXISTING SERVER.");
+
+                var keyInfo = Console.ReadKey(true);
+
+                if ((keyInfo.Key == ConsoleKey.UpArrow) || (keyInfo.Key == ConsoleKey.DownArrow))
+                {
+                    _onlineMode = (GameOnlineModeEnum)(Convert.ToInt16(_onlineMode) * -1);
+                }
+
+                Console.Clear();
+
+                if (keyInfo.Key == ConsoleKey.Enter)
+                {
+                    _step = GameStepEnum.SelectNetwork;
+                    break;
+                }
+            }
+        }
+
+        private void CreateServer()
+        {
+            if ((_mode != GameModeEnum.Online) || (_step != GameStepEnum.SelectNetwork) || (_onlineMode != GameOnlineModeEnum.Create))
+            {
+                return;
+            }
+
+            if (_server == null)
+            {
+                Console.Write("ENTER CONNECTION PORT: ");
+                var port = Convert.ToInt32(Console.ReadLine());
+
+                _server = new Server(port);
+                _server.Start();
+
+            }
+
+            while (!_server.Clients.Any())
+            {
+                Console.Write($"WE ARE EXPECTING PLAYERS TO CONNECT AT ADDRESS {_server.GetCurrentAddress()}...");
+                Thread.Sleep(1000);
+                Console.Clear();
+            }
+
+            _step = GameStepEnum.SelectGameMap;
+        }
+
+        private void ConnectionToServer()
+        {
+            if ((_mode != GameModeEnum.Online) || (_step != GameStepEnum.SelectNetwork) || (_onlineMode != GameOnlineModeEnum.Join))
+            {
+                return;
+            }
+
+            if (_client == null)
+            {
+                Console.Write("ENTER SERVER HOST: ");
+                var host = Console.ReadLine();
+                Console.Write("ENTER SERVER PORT: ");
+                var port = Convert.ToInt32(Console.ReadLine());
+
+                _client = new Client(host, port);
+                _client.Start();
+            }
+
+            if (_client.IsConnected())
+            {
+                _step = GameStepEnum.SelectPlayer;
+            }
         }
 
         private void SelectMap()
@@ -120,6 +190,12 @@ namespace ConsoleTankGameOnline
                 if (keyInfo.Key == ConsoleKey.Enter)
                 {
                     _word = new World(maps[selectedMapIndex]);
+
+                    if ((_mode == GameModeEnum.Online) && (_server != null))
+                    {
+                        _server.SendPacket(new WorldInfo(maps[selectedMapIndex]));
+                    }
+
                     _step = GameStepEnum.SelectPlayer;
                     break;
                 }
@@ -165,7 +241,7 @@ namespace ConsoleTankGameOnline
                 {
                     var player = new Player(players[selectedPlayerIndex], _word)
                     {
-                        Name = "Alexey",
+                        Name = Guid.NewGuid().ToString(),
                         Position = new() { X = 44, Y = 20 }
                     };
                     _word?.AddCharacter(player);
@@ -181,7 +257,7 @@ namespace ConsoleTankGameOnline
             Console.WriteLine("LOADING MAPS...");
             Directory.CreateDirectory(World.MapPath);
             Console.WriteLine("LOADING TANKS...");
-            Directory.CreateDirectory(Player.SkinPath);
+            Directory.CreateDirectory(CharacterBase.SkinPath);
         }
     }
 }

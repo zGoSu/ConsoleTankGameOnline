@@ -1,7 +1,4 @@
-﻿using ConsoleTankGameOnline.Source.AI;
-using ConsoleTankGameOnline.Source.Interface;
-
-namespace ConsoleTankGameOnline.Source
+﻿namespace ConsoleTankGameOnline.Source
 {
     public class Game
     {
@@ -28,15 +25,15 @@ namespace ConsoleTankGameOnline.Source
 
         private void AddEnemy()
         {
-            var rand = new Random();
-            var skins = Directory.GetDirectories(CharacterBase.SkinPath);
-            var randIndex = rand.Next(skins.Length);
-            var enemy = new Enemy(skins[randIndex], _world)
-            {
-                Position = new() { X = 6, Y = 20 }
-            };
+            //var rand = new Random();
+            //var skins = Directory.GetDirectories(CharacterBase.SkinPath);
+            //var randIndex = rand.Next(skins.Length);
+            //var enemy = new Enemy(skins[randIndex], _world)
+            //{
+            //    Position = new() { X = 6, Y = 20 }
+            //};
 
-            _world.AddCharacter(enemy);
+            //_world.AddCharacter(enemy);
         }
     }
 }
