@@ -1,5 +1,4 @@
 ﻿using ConsoleTankGameOnline.Source.Abstract;
-using System.Diagnostics;
 using System.Net.Sockets;
 
 namespace ConsoleTankGameOnline.Source.Network
@@ -62,9 +61,9 @@ namespace ConsoleTankGameOnline.Source.Network
                 while (true)
                 {
                     var message = await _reader.ReadLineAsync();
-                    var packet = PacketBase.Deserialize(message);
+                    //var packet = PacketBase.Deserialize(message);
 
-                    await _server.SendPacket(packet);
+                    throw new Exception("WHAT IS IT?????");
                 }
             }
             catch (Exception ex)
@@ -84,9 +83,9 @@ namespace ConsoleTankGameOnline.Source.Network
                 try
                 {
                     var message = await _reader.ReadLineAsync();
+                    var packet = new PacketBase().Deserialize(message);
 
-                    // TODO: Заменить на обработку команд
-                    Debug.Print($"Client.ReceiveMessage: {message}");
+                    packet.HandlePacket();
                 }
                 catch (Exception ex)
                 {

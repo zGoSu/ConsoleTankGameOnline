@@ -7,8 +7,9 @@ namespace ConsoleTankGameOnline.Source.Network.Packages
         public WorldInfo(string path)
         {
             Path = path;
+            Name = nameof(WorldInfo);
         }
 
-        public string Path { get; }
+        public string Path { get; set; }
     }
 }

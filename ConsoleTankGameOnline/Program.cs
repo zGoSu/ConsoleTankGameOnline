@@ -8,6 +8,11 @@ namespace ConsoleTankGameOnline
 {
     public class Program
     {
+        public Program()
+        {
+            Listener.OnWorldSelected += Listener_OnWorldOpened;
+        }
+
         private readonly GameStateEnum _state = GameStateEnum.None;
         private GameModeEnum _mode = GameModeEnum.Offline;
         private GameStepEnum _step = GameStepEnum.SelectGameMode;
@@ -250,6 +255,11 @@ namespace ConsoleTankGameOnline
                     break;
                 }
             }
+        }
+
+        private void Listener_OnWorldOpened(string path)
+        {
+            _word = new World(path);
         }
 
         private void CreateDirectory()

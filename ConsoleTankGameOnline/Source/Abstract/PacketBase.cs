@@ -1,14 +1,41 @@
-﻿using Newtonsoft.Json;
+﻿using ConsoleTankGameOnline.Source.Network.Packages;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace ConsoleTankGameOnline.Source.Abstract
 {
-    public abstract class PacketBase
+    public class PacketBase
     {
-        public string Serialize() => JsonConvert.SerializeObject(this);
+        [JsonProperty("name")]
+        public string Name { get; set; } = string.Empty;
 
-        public static PacketBase Deserialize(string json)
+        public string Serialize()
         {
-            return (PacketBase)JsonConvert.DeserializeObject(json);
+            return JsonConvert.SerializeObject(this);
+        }
+
+        public PacketBase? Deserialize(string json)
+        {
+            var jsonObject = JObject.Parse(json);
+            var name = jsonObject["name"]?.ToString();
+
+            return name switch
+            {
+                nameof(WorldInfo) => JsonConvert.DeserializeObject<WorldInfo>(json),
+                _ => JsonConvert.DeserializeObject<PacketBase>(json),
+            };
+        }
+
+        public void HandlePacket()
+        {
+            switch (Name)
+            {
+                case nameof(WorldInfo):
+                    Listener.SelectWorld(((WorldInfo)this).Path);
+                    break;
+                default:
+                    break;
+            }
         }
     }
 }
