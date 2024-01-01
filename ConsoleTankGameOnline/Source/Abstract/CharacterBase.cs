@@ -23,8 +23,10 @@ namespace ConsoleTankGameOnline.Source.Interface
 
         public Dictionary<RotationEnum, char[,]> Skins { get; private set; } = [];
         public string Name { get; set; } = string.Empty;
-        public int Width { get; set; }
-        public int Height { get; set; }
+        [JsonIgnore]
+        public int Width { get; set; } = 5;
+        [JsonIgnore]
+        public int Height { get; set; } = 5;
         public Position Position { get; set; }
         public char[,]? Skin { get; set; }
         [JsonIgnore]
