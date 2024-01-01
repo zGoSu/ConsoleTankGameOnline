@@ -11,19 +11,19 @@ namespace ConsoleTankGameOnline.Source.Interface
             Weapon = new Weapon(this);
         }
 
-        public CharacterBase(string skin)
+        public CharacterBase(string skin) : this()
         {
             Skins.Add(RotationEnum.Front, ConvertSkinToArray([.. File.ReadAllLines($"{skin}/{Path.GetFileName(skin)}_front.txt")]));
             Skins.Add(RotationEnum.Back, ConvertSkinToArray([.. File.ReadAllLines($"{skin}/{Path.GetFileName(skin)}_back.txt")]));
             Skins.Add(RotationEnum.Left, ConvertSkinToArray([.. File.ReadAllLines($"{skin}/{Path.GetFileName(skin)}_left.txt")]));
             Skins.Add(RotationEnum.Right, ConvertSkinToArray([.. File.ReadAllLines($"{skin}/{Path.GetFileName(skin)}_right.txt")]));
             Skin = Skins[RotationEnum.Front];
-            Weapon = new Weapon(this);
         }
 
         private World? _world;
-        protected Dictionary<RotationEnum, char[,]> Skins { get; private set; } = [];
+        public Dictionary<RotationEnum, char[,]> Skins { get; private set; } = [];
 
+        [JsonIgnore]
         public World? World
         {
             get => _world;
@@ -37,18 +37,21 @@ namespace ConsoleTankGameOnline.Source.Interface
             }
         }
         public string Name { get; set; } = string.Empty;
-        [JsonIgnore]
-        public int Width { get; private set; }
-        [JsonIgnore]
-        public int Height { get; private set; }
+        public int Width { get; set; }
+        public int Height { get; set; }
         public Position Position { get; set; }
-        public char[,]? Skin { get; private set; }
+        public char[,]? Skin { get; set; }
         [JsonIgnore]
         public readonly Weapon Weapon;
         public const string SkinPath = "Resurce/Skins";
 
         private void SetStartPosition()
         {
+            if ((Position.X > 0) && (Position.Y > 0))
+            {
+                return;
+            }
+
             var newPosition = new Position();
             var rand = new Random();
 

@@ -250,10 +250,9 @@ namespace ConsoleTankGameOnline
                     var player = new Player(players[selectedPlayerIndex])
                     {
                         Name = Guid.NewGuid().ToString(),
-                        World = _world
                     };
 
-                    _world?.AddCharacter(player);
+                    Listener.AddPlayer(player, true);
                     _game = new Game(_world);
                     _step = GameStepEnum.LoadGame;
                     break;

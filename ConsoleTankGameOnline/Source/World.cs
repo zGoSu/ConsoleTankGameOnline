@@ -40,12 +40,6 @@ namespace ConsoleTankGameOnline.Source
             Console.SetCursorPosition(0, 0);
         }
 
-        public void AddCharacter(CharacterBase character)
-        {
-            _characters.Add(character);
-            Listener.AddPlayer(character, true);
-        }
-
         private void RemoveCharacter(CharacterBase character)
         {
             _characters.Remove(character);
@@ -116,10 +110,8 @@ namespace ConsoleTankGameOnline.Source
 
         private void Listener_OnPlayerAdded(CharacterBase character, bool sendPacket)
         {
-            if (!sendPacket)
-            {
-                _characters.Add(character);
-            }
+            character.World = this;
+            _characters.Add(character);
         }
     }
 }

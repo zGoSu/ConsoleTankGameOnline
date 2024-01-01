@@ -1,10 +1,10 @@
 ﻿namespace ConsoleTankGameOnline.Source.Enum
 {
-    public enum RotationEnum
+    public enum RotationEnum : byte
     {
-        Front,
-        Back,
-        Left,
-        Right
+        Front = 1,
+        Back = 2,
+        Left = 3,
+        Right = 4,
     }
 }

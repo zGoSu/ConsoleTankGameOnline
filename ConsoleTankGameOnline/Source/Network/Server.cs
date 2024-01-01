@@ -28,7 +28,7 @@ namespace ConsoleTankGameOnline.Source.Network
                     var client = new Client(tcpClient, this);
 
                     _clients.Add(client);
-                    Task.Run(client.Process);
+                    Task.Run(client.ReceivePacket);
                 }
             }
             catch (Exception ex)

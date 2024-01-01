@@ -55,7 +55,7 @@ namespace ConsoleTankGameOnline.Source.Network
             return _client.Connected;
         }
 
-        public async Task Process()
+        public async Task ReceivePacket()
         {
             try
             {
@@ -69,31 +69,13 @@ namespace ConsoleTankGameOnline.Source.Network
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Client.Process: {ex.Message}");
+                Console.Clear();
+                Console.WriteLine(ex);
+                Thread.Sleep(1000);
             }
             finally
             {
                 _server?.RemoveClient(this);
-            }
-        }
-
-        private async Task ReceivePacket()
-        {
-            while (true)
-            {
-                try
-                {
-                    var message = await _reader.ReadLineAsync();
-                    var packet = new PacketBase().Deserialize(message);
-
-                    packet?.HandlePacket();
-                }
-                catch (Exception ex)
-                {
-                    Console.Clear();
-                    Console.WriteLine(ex);
-                    Thread.Sleep(1000);
-                }
             }
         }
 
