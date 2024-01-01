@@ -9,6 +9,7 @@ namespace ConsoleTankGameOnline.Source
             _map = Map(map);
             MaxX = _map.GetLength(0);
             MaxY = _map.GetLength(1);
+            Listener.OnPlayerAdded += Listener_OnPlayerAdded;
         }
 
         private readonly char[,] _map;
@@ -42,6 +43,7 @@ namespace ConsoleTankGameOnline.Source
         public void AddCharacter(CharacterBase character)
         {
             _characters.Add(character);
+            Listener.AddPlayer(character, true);
         }
 
         private void RemoveCharacter(CharacterBase character)
@@ -66,7 +68,7 @@ namespace ConsoleTankGameOnline.Source
                     {
                         if (map[character.Position.X + i, character.Position.Y + j] == Shell.Symbol)
                         {
-                            Listener.ShellDestroy();
+                            Listener.DestroyShell();
                             RemoveCharacter(character);
                             break;
                         }
@@ -110,6 +112,14 @@ namespace ConsoleTankGameOnline.Source
             }
 
             return map;
+        }
+
+        private void Listener_OnPlayerAdded(CharacterBase character, bool sendPacket)
+        {
+            if (!sendPacket)
+            {
+                _characters.Add(character);
+            }
         }
     }
 }

@@ -10,7 +10,7 @@ namespace ConsoleTankGameOnline
     {
         public Program()
         {
-            Listener.OnWorldSelected += Listener_OnWorldOpened;
+            Listener.OnWorldCreated += Listener_OnWorldOpened;
         }
 
         private GameModeEnum _mode = GameModeEnum.Offline;
@@ -19,14 +19,15 @@ namespace ConsoleTankGameOnline
         private const char _selectCursor = '→';
         private World? _word;
         private Game? _game;
-        private Server? _server;
-        private Client? _client;
+        private PacketManager? _packetManager;
+        private INetwork? _network;
 
         private static void Main(string[] args)
         {
             Console.InputEncoding = System.Text.Encoding.UTF8;
             Console.OutputEncoding = System.Text.Encoding.UTF8;
             Console.CursorVisible = false;
+            Console.SetWindowSize(50, 50);
             Console.Title = "Console Tank Game Online";
 
             new Program().Start();
@@ -112,19 +113,20 @@ namespace ConsoleTankGameOnline
                 return;
             }
 
-            if (_server == null)
+            if (_network == null)
             {
                 Console.Write("ENTER CONNECTION PORT: ");
                 var port = Convert.ToInt32(Console.ReadLine());
 
-                _server = new Server(port);
-                _server.Start();
-
+                _network = new Server(port);
+                _network.Start();
             }
 
-            while (!_server.Clients.Any())
+            _packetManager = new PacketManager(_network);
+
+            while (!((Server)_network).Clients.Any())
             {
-                Console.Write($"WE ARE EXPECTING PLAYERS TO CONNECT AT ADDRESS {_server.GetCurrentAddress()}...");
+                Console.Write($"WE ARE EXPECTING PLAYERS\nTO CONNECT AT ADDRESS {((Server)_network).GetCurrentAddress()}...");
                 Thread.Sleep(1000);
                 Console.Clear();
             }
@@ -139,18 +141,20 @@ namespace ConsoleTankGameOnline
                 return;
             }
 
-            if (_client == null)
+            if (_network == null)
             {
                 Console.Write("ENTER SERVER HOST: ");
                 var host = Console.ReadLine();
                 Console.Write("ENTER SERVER PORT: ");
                 var port = Convert.ToInt32(Console.ReadLine());
 
-                _client = new Client(host, port);
-                _client.Start();
+                _network = new Client(host, port);
+                _network.Start();
             }
 
-            if (_client.IsConnected())
+            _packetManager = new PacketManager(_network);
+
+            if (((Client)_network).IsConnected())
             {
                 _step = GameStepEnum.SelectPlayer;
             }
@@ -195,9 +199,9 @@ namespace ConsoleTankGameOnline
                 {
                     _word = new World(maps[selectedMapIndex]);
 
-                    if ((_mode == GameModeEnum.Online) && (_server != null))
+                    if ((_mode == GameModeEnum.Online) && (_onlineMode == GameOnlineModeEnum.Create))
                     {
-                        _server.SendPacket(new WorldInfo(maps[selectedMapIndex]));
+                        _packetManager?.SendPacket(new WorldInfo(maps[selectedMapIndex]));
                     }
 
                     _step = GameStepEnum.SelectPlayer;

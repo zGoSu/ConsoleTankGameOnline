@@ -62,9 +62,9 @@ namespace ConsoleTankGameOnline.Source.Network
                 while (true)
                 {
                     var message = await _reader.ReadLineAsync();
-                    //var packet = PacketBase.Deserialize(message);
+                    var packet = new PacketBase().Deserialize(message);
 
-                    throw new Exception("WHAT IS IT?????");
+                    packet?.HandlePacket();
                 }
             }
             catch (Exception ex)
@@ -90,7 +90,9 @@ namespace ConsoleTankGameOnline.Source.Network
                 }
                 catch (Exception ex)
                 {
+                    Console.Clear();
                     Console.WriteLine($"Client.ReceiveMessage: {ex.Message}");
+                    Thread.Sleep(1000);
                 }
             }
         }

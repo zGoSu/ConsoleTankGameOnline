@@ -7,7 +7,7 @@ namespace ConsoleTankGameOnline.Source.Network.Packages
         public WorldInfo(string path)
         {
             Path = path;
-            Name = nameof(WorldInfo);
+            ID = Enum.PacketEnum.WorldInfo;
         }
 
         public string Path { get; set; }

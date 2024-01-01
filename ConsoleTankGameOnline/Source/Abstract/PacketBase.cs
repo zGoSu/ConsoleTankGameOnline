@@ -1,4 +1,5 @@
-﻿using ConsoleTankGameOnline.Source.Network.Packages;
+﻿using ConsoleTankGameOnline.Source.Enum;
+using ConsoleTankGameOnline.Source.Network.Packages;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -6,8 +7,8 @@ namespace ConsoleTankGameOnline.Source.Abstract
 {
     public class PacketBase
     {
-        [JsonProperty("name")]
-        public string Name { get; set; } = string.Empty;
+        [JsonProperty("id")]
+        public PacketEnum ID { get; set; }
 
         public string Serialize()
         {
@@ -17,21 +18,25 @@ namespace ConsoleTankGameOnline.Source.Abstract
         public PacketBase? Deserialize(string json)
         {
             var jsonObject = JObject.Parse(json);
-            var name = jsonObject["name"]?.ToString();
+            var id = (PacketEnum)Convert.ToByte(jsonObject["id"]);
 
-            return name switch
+            return id switch
             {
-                nameof(WorldInfo) => JsonConvert.DeserializeObject<WorldInfo>(json),
+                PacketEnum.WorldInfo => JsonConvert.DeserializeObject<WorldInfo>(json),
+                PacketEnum.PlayerInfo => JsonConvert.DeserializeObject<PlayerInfo>(json),
                 _ => JsonConvert.DeserializeObject<PacketBase>(json),
             };
         }
 
         public void HandlePacket()
         {
-            switch (Name)
+            switch (ID)
             {
-                case nameof(WorldInfo):
-                    Listener.SelectWorld(((WorldInfo)this).Path);
+                case PacketEnum.WorldInfo:
+                    Listener.CreateWorld(((WorldInfo)this).Path);
+                    break;
+                case PacketEnum.PlayerInfo:
+                    Listener.AddPlayer(((PlayerInfo)this).Character, false);
                     break;
                 default:
                     break;

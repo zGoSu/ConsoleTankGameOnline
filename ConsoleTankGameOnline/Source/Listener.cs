@@ -1,4 +1,6 @@
-﻿namespace ConsoleTankGameOnline.Source
+﻿using ConsoleTankGameOnline.Source.Interface;
+
+namespace ConsoleTankGameOnline.Source
 {
     public class Listener
     {
@@ -6,24 +8,24 @@
         public static event ShellDestroyHandler? OnShellDestroyed;
 
         public delegate void WorldHandler(string path);
-        public static event WorldHandler? OnWorldSelected;
+        public static event WorldHandler? OnWorldCreated;
 
-        public delegate void PlayerHandler(string path);
-        public static event PlayerHandler? OnPlayerSelected;
+        public delegate void PlayerHandler(CharacterBase character, bool sendPacket);
+        public static event PlayerHandler? OnPlayerAdded;
 
-        public static void ShellDestroy()
+        public static void DestroyShell()
         {
             OnShellDestroyed?.Invoke();
         }
 
-        public static void SelectWorld(string path)
+        public static void CreateWorld(string path)
         {
-            OnWorldSelected?.Invoke(path);
+            OnWorldCreated?.Invoke(path);
         }
 
-        public static void SelecterPlayer(string path)
+        public static void AddPlayer(CharacterBase character, bool sendPacket)
         {
-            OnPlayerSelected?.Invoke(path);
+            OnPlayerAdded?.Invoke(character, sendPacket);
         }
     }
 }

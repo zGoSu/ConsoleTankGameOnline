@@ -1,13 +1,13 @@
 ﻿using ConsoleTankGameOnline.Source.Enum;
 using ConsoleTankGameOnline.Source.Structure;
+using Newtonsoft.Json;
 
 namespace ConsoleTankGameOnline.Source.Interface
 {
-    public abstract class CharacterBase
+    public class CharacterBase
     {
         public CharacterBase(string skin, World world)
         {
-            ;
             _skins.Add(RotationEnum.Front, ConvertSkinToArray([.. File.ReadAllLines($"{skin}/{Path.GetFileName(skin)}_front.txt")]));
             _skins.Add(RotationEnum.Back, ConvertSkinToArray([.. File.ReadAllLines($"{skin}/{Path.GetFileName(skin)}_back.txt")]));
             _skins.Add(RotationEnum.Left, ConvertSkinToArray([.. File.ReadAllLines($"{skin}/{Path.GetFileName(skin)}_left.txt")]));
@@ -23,10 +23,14 @@ namespace ConsoleTankGameOnline.Source.Interface
 
         private World _world { get; }
         public string Name { get; set; } = string.Empty;
+        [JsonIgnore]
         public int Width { get; private set; }
+        [JsonIgnore]
         public int Height { get; private set; }
         public Position Position { get; set; }
-        public char[,] Skin;
+        [JsonIgnore]
+        public char[,] Skin { get; private set; }
+        [JsonIgnore]
         public readonly Weapon Weapon;
         public const string SkinPath = "Resurce/Skins";
 
@@ -48,7 +52,7 @@ namespace ConsoleTankGameOnline.Source.Interface
             }
         }
 
-        public abstract void Action();
+        public virtual void Action() { }
 
         protected void Rotation(ConsoleKey key)
         {

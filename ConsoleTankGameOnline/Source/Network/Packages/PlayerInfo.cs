@@ -5,12 +5,12 @@ namespace ConsoleTankGameOnline.Source.Network.Packages
 {
     public class PlayerInfo : PacketBase
     {
-        public PlayerInfo(CharacterBase character) 
+        public PlayerInfo(CharacterBase character)
         {
             ID = Enum.PacketEnum.PlayerInfo;
             Character = character;
         }
 
-        public CharacterBase Character;
+        public CharacterBase Character { get; set; }
     }
 }
