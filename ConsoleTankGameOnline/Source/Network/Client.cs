@@ -91,7 +91,7 @@ namespace ConsoleTankGameOnline.Source.Network
                 catch (Exception ex)
                 {
                     Console.Clear();
-                    Console.WriteLine($"Client.ReceiveMessage: {ex.Message}");
+                    Console.WriteLine(ex);
                     Thread.Sleep(1000);
                 }
             }

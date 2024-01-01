@@ -17,7 +17,7 @@ namespace ConsoleTankGameOnline
         private GameStepEnum _step = GameStepEnum.SelectGameMode;
         private GameOnlineModeEnum _onlineMode = GameOnlineModeEnum.Create;
         private const char _selectCursor = '→';
-        private World? _word;
+        private World? _world;
         private Game? _game;
         private PacketManager? _packetManager;
         private INetwork? _network;
@@ -197,7 +197,7 @@ namespace ConsoleTankGameOnline
 
                 if (keyInfo.Key == ConsoleKey.Enter)
                 {
-                    _word = new World(maps[selectedMapIndex]);
+                    _world = new World(maps[selectedMapIndex]);
 
                     if ((_mode == GameModeEnum.Online) && (_onlineMode == GameOnlineModeEnum.Create))
                     {
@@ -247,13 +247,14 @@ namespace ConsoleTankGameOnline
 
                 if (keyInfo.Key == ConsoleKey.Enter)
                 {
-                    var player = new Player(players[selectedPlayerIndex], _word)
+                    var player = new Player(players[selectedPlayerIndex])
                     {
-                        Name = Guid.NewGuid().ToString()
+                        Name = Guid.NewGuid().ToString(),
+                        World = _world
                     };
 
-                    _word?.AddCharacter(player);
-                    _game = new Game(_word);
+                    _world?.AddCharacter(player);
+                    _game = new Game(_world);
                     _step = GameStepEnum.LoadGame;
                     break;
                 }
@@ -262,7 +263,7 @@ namespace ConsoleTankGameOnline
 
         private void Listener_OnWorldOpened(string path)
         {
-            _word = new World(path);
+            _world = new World(path);
         }
 
         private void CreateDirectory()

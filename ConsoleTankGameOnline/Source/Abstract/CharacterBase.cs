@@ -6,30 +6,43 @@ namespace ConsoleTankGameOnline.Source.Interface
 {
     public class CharacterBase
     {
-        public CharacterBase(string skin, World world)
+        public CharacterBase()
         {
-            _skins.Add(RotationEnum.Front, ConvertSkinToArray([.. File.ReadAllLines($"{skin}/{Path.GetFileName(skin)}_front.txt")]));
-            _skins.Add(RotationEnum.Back, ConvertSkinToArray([.. File.ReadAllLines($"{skin}/{Path.GetFileName(skin)}_back.txt")]));
-            _skins.Add(RotationEnum.Left, ConvertSkinToArray([.. File.ReadAllLines($"{skin}/{Path.GetFileName(skin)}_left.txt")]));
-            _skins.Add(RotationEnum.Right, ConvertSkinToArray([.. File.ReadAllLines($"{skin}/{Path.GetFileName(skin)}_right.txt")]));
-            Skin = _skins[RotationEnum.Front];
             Weapon = new Weapon(this);
-            _world = world;
-
-            SetStartPosition();
         }
 
-        private readonly Dictionary<RotationEnum, char[,]> _skins = [];
+        public CharacterBase(string skin)
+        {
+            Skins.Add(RotationEnum.Front, ConvertSkinToArray([.. File.ReadAllLines($"{skin}/{Path.GetFileName(skin)}_front.txt")]));
+            Skins.Add(RotationEnum.Back, ConvertSkinToArray([.. File.ReadAllLines($"{skin}/{Path.GetFileName(skin)}_back.txt")]));
+            Skins.Add(RotationEnum.Left, ConvertSkinToArray([.. File.ReadAllLines($"{skin}/{Path.GetFileName(skin)}_left.txt")]));
+            Skins.Add(RotationEnum.Right, ConvertSkinToArray([.. File.ReadAllLines($"{skin}/{Path.GetFileName(skin)}_right.txt")]));
+            Skin = Skins[RotationEnum.Front];
+            Weapon = new Weapon(this);
+        }
 
-        private World _world { get; }
+        private World? _world;
+        protected Dictionary<RotationEnum, char[,]> Skins { get; private set; } = [];
+
+        public World? World
+        {
+            get => _world;
+            set
+            {
+                if (_world == null)
+                {
+                    _world = value;
+                    SetStartPosition();
+                }
+            }
+        }
         public string Name { get; set; } = string.Empty;
         [JsonIgnore]
         public int Width { get; private set; }
         [JsonIgnore]
         public int Height { get; private set; }
         public Position Position { get; set; }
-        [JsonIgnore]
-        public char[,] Skin { get; private set; }
+        public char[,]? Skin { get; private set; }
         [JsonIgnore]
         public readonly Weapon Weapon;
         public const string SkinPath = "Resurce/Skins";
@@ -41,8 +54,8 @@ namespace ConsoleTankGameOnline.Source.Interface
 
             while (true)
             {
-                newPosition.X = rand.Next(1, _world.MaxX - Height);
-                newPosition.Y = rand.Next(1, _world.MaxY - Width);
+                newPosition.X = rand.Next(1, World.MaxX - Height);
+                newPosition.Y = rand.Next(1, World.MaxY - Width);
 
                 if (!IsEnemyNearMe(newPosition))
                 {
@@ -59,16 +72,16 @@ namespace ConsoleTankGameOnline.Source.Interface
             switch (key)
             {
                 case ConsoleKey.UpArrow:
-                    Skin = _skins[RotationEnum.Front];
+                    Skin = Skins[RotationEnum.Front];
                     break;
                 case ConsoleKey.DownArrow:
-                    Skin = _skins[RotationEnum.Back];
+                    Skin = Skins[RotationEnum.Back];
                     break;
                 case ConsoleKey.LeftArrow:
-                    Skin = _skins[RotationEnum.Left];
+                    Skin = Skins[RotationEnum.Left];
                     break;
                 case ConsoleKey.RightArrow:
-                    Skin = _skins[RotationEnum.Right];
+                    Skin = Skins[RotationEnum.Right];
                     break;
                 default:
                     break;
@@ -77,7 +90,7 @@ namespace ConsoleTankGameOnline.Source.Interface
 
         protected bool IsEnemyNearMe(Position newPosition)
         {
-            foreach (var enemyPosition in _world.Characters.Where(c => c != this).Select(s => s.Position))
+            foreach (var enemyPosition in World.Characters.Where(c => c != this).Select(s => s.Position))
             {
                 if ((newPosition.Y < enemyPosition.Y + Width) && (newPosition.Y > enemyPosition.Y - Width)
                     && (newPosition.X < enemyPosition.X + Height) && (newPosition.X > enemyPosition.X - Height))
