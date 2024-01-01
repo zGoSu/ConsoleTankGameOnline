@@ -52,7 +52,7 @@ namespace ConsoleTankGameOnline.Source
                     break;
             }
 
-            if (!World.IsWall[newPosition.X, newPosition.Y] && !World.IsWall[newPosition.X + Height - 1, newPosition.Y + Width - 1] && !IsEnemyNearMe(newPosition))
+            if (!World.Instance.IsWall[newPosition.X, newPosition.Y] && !World.Instance.IsWall[newPosition.X + Height - 1, newPosition.Y + Width - 1] && !IsEnemyNearMe(newPosition))
             {
                 Position = newPosition;
                 Rotation(keyInfo.Key);

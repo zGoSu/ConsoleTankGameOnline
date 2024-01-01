@@ -7,7 +7,7 @@ namespace ConsoleTankGameOnline.Source
         public delegate void ShellDestroyHandler();
         public static event ShellDestroyHandler? OnShellDestroyed;
 
-        public delegate void WorldHandler(string path);
+        public delegate void WorldHandler(char[,] map);
         public static event WorldHandler? OnWorldCreated;
 
         public delegate void PlayerHandler(CharacterBase character, bool sendPacket);
@@ -18,9 +18,9 @@ namespace ConsoleTankGameOnline.Source
             OnShellDestroyed?.Invoke();
         }
 
-        public static void CreateWorld(string path)
+        public static void CreateWorld(char[,] map)
         {
-            OnWorldCreated?.Invoke(path);
+            OnWorldCreated?.Invoke(map);
         }
 
         public static void AddPlayer(CharacterBase character, bool sendPacket)

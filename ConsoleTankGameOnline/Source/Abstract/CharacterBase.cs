@@ -9,6 +9,7 @@ namespace ConsoleTankGameOnline.Source.Interface
         public CharacterBase()
         {
             Weapon = new Weapon(this);
+            SetStartPosition();
         }
 
         public CharacterBase(string skin) : this()
@@ -20,22 +21,7 @@ namespace ConsoleTankGameOnline.Source.Interface
             Skin = Skins[RotationEnum.Front];
         }
 
-        private World? _world;
         public Dictionary<RotationEnum, char[,]> Skins { get; private set; } = [];
-
-        [JsonIgnore]
-        public World? World
-        {
-            get => _world;
-            set
-            {
-                if (_world == null)
-                {
-                    _world = value;
-                    SetStartPosition();
-                }
-            }
-        }
         public string Name { get; set; } = string.Empty;
         public int Width { get; set; }
         public int Height { get; set; }
@@ -47,21 +33,17 @@ namespace ConsoleTankGameOnline.Source.Interface
 
         private void SetStartPosition()
         {
-            if ((Position.X > 0) && (Position.Y > 0))
-            {
-                return;
-            }
-
             var newPosition = new Position();
             var rand = new Random();
 
             while (true)
             {
-                newPosition.X = rand.Next(1, World.MaxX - Height);
-                newPosition.Y = rand.Next(1, World.MaxY - Width);
+                newPosition.X = rand.Next(1, World.Instance.MaxMapX - Height - 1);
+                newPosition.Y = rand.Next(1, World.Instance.MaxMapY - Width - 1);
 
                 if (!IsEnemyNearMe(newPosition))
                 {
+                    newPosition.Rotation = RotationEnum.Front;
                     Position = newPosition;
                     break;
                 }
@@ -93,7 +75,7 @@ namespace ConsoleTankGameOnline.Source.Interface
 
         protected bool IsEnemyNearMe(Position newPosition)
         {
-            foreach (var enemyPosition in World.Characters.Where(c => c != this).Select(s => s.Position))
+            foreach (var enemyPosition in World.Instance.Objects.Where(c => c != this).Select(s => s.Position))
             {
                 if ((newPosition.Y < enemyPosition.Y + Width) && (newPosition.Y > enemyPosition.Y - Width)
                     && (newPosition.X < enemyPosition.X + Height) && (newPosition.X > enemyPosition.X - Height))

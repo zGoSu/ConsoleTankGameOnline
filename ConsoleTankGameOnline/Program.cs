@@ -17,7 +17,6 @@ namespace ConsoleTankGameOnline
         private GameStepEnum _step = GameStepEnum.SelectGameMode;
         private GameOnlineModeEnum _onlineMode = GameOnlineModeEnum.Create;
         private const char _selectCursor = '→';
-        private World? _world;
         private Game? _game;
         private PacketManager? _packetManager;
         private INetwork? _network;
@@ -167,7 +166,7 @@ namespace ConsoleTankGameOnline
                 return;
             }
 
-            var maps = Directory.GetFiles(World.MapPath);
+            var maps = World.Locations.ToArray();
             int selectedMapIndex = 0;
 
             while (_step == GameStepEnum.SelectGameMap)
@@ -197,11 +196,16 @@ namespace ConsoleTankGameOnline
 
                 if (keyInfo.Key == ConsoleKey.Enter)
                 {
-                    _world = new World(maps[selectedMapIndex]);
+                    World.CreateWorld(maps[selectedMapIndex]);
+
+                    if (World.Instance?.Map == null)
+                    {
+                        throw new Exception("ERROR WHEN CREATING THE WORLD!");
+                    }
 
                     if ((_mode == GameModeEnum.Online) && (_onlineMode == GameOnlineModeEnum.Create))
                     {
-                        _packetManager?.SendPacket(new WorldInfo(maps[selectedMapIndex]));
+                        _packetManager?.SendPacket(new WorldInfo(World.Instance.Map));
                     }
 
                     _step = GameStepEnum.SelectPlayer;
@@ -253,22 +257,22 @@ namespace ConsoleTankGameOnline
                     };
 
                     Listener.AddPlayer(player, true);
-                    _game = new Game(_world);
+                    _game = new Game();
                     _step = GameStepEnum.LoadGame;
                     break;
                 }
             }
         }
 
-        private void Listener_OnWorldOpened(string path)
+        private void Listener_OnWorldOpened(char[,] map)
         {
-            _world = new World(path);
+            World.CreateWorld(map);
         }
 
         private void CreateDirectory()
         {
             Console.WriteLine("LOADING MAPS...");
-            Directory.CreateDirectory(World.MapPath);
+            World.CreateDirectory();
             Console.WriteLine("LOADING TANKS...");
             Directory.CreateDirectory(CharacterBase.SkinPath);
         }

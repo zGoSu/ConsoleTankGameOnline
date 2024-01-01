@@ -31,7 +31,7 @@ namespace ConsoleTankGameOnline.Source
                     break;
                 case Enum.RotationEnum.Back:
                     position.Y = (position.Y * 2 + _character.Width) / 2;
-                    position.X -= _character.Height;
+                    position.X += _character.Height;
                     break;
                 case Enum.RotationEnum.Left:
                     position.X = (position.X * 2 + _character.Height) / 2;

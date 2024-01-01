@@ -4,12 +4,12 @@ namespace ConsoleTankGameOnline.Source.Network.Packages
 {
     public class WorldInfo : PacketBase
     {
-        public WorldInfo(string path)
+        public WorldInfo(char[,] map)
         {
-            Path = path;
+            Map = map;
             ID = Enum.PacketEnum.WorldInfo;
         }
 
-        public string Path { get; set; }
+        public char[,] Map { get; set; }
     }
 }

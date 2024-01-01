@@ -33,7 +33,7 @@ namespace ConsoleTankGameOnline.Source.Abstract
             switch (ID)
             {
                 case PacketEnum.WorldInfo:
-                    Listener.CreateWorld(((WorldInfo)this).Path);
+                    Listener.CreateWorld(((WorldInfo)this).Map);
                     break;
                 case PacketEnum.PlayerInfo:
                     Listener.AddPlayer(((PlayerInfo)this).Character, false);

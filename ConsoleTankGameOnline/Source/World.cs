@@ -1,34 +1,90 @@
 ﻿using ConsoleTankGameOnline.Source.Interface;
+using Newtonsoft.Json;
 
 namespace ConsoleTankGameOnline.Source
 {
     public class World
     {
-        public World(string map)
+        public World()
         {
-            _map = Map(map);
-            MaxX = _map.GetLength(0);
-            MaxY = _map.GetLength(1);
             Listener.OnPlayerAdded += Listener_OnPlayerAdded;
         }
 
-        private readonly char[,] _map;
+        private readonly List<CharacterBase> _objects = [];
         private const char _wall = '■';
-        private readonly List<CharacterBase> _characters = [];
+        private const string _path = "Resurce/Maps";
 
-        public const string MapPath = "Resurce/Maps";
-        public IEnumerable<CharacterBase> Characters => _characters;
-        public static bool[,] IsWall;
-        public int MaxX { get; }
-        public int MaxY { get; }
+        [JsonIgnore]
+        public static World? Instance { get; private set; }
 
+        [JsonIgnore]
+        public IEnumerable<CharacterBase> Objects => _objects;
+        [JsonIgnore]
+        public static IEnumerable<string> Locations = Directory.GetFiles(_path);
+        [JsonIgnore]
+        public int MaxMapX { get; private set; }
+        [JsonIgnore]
+        public int MaxMapY { get; private set; }
+        [JsonIgnore]
+        public bool[,]? IsWall { get; private set; }
+        public char[,] Map { get; set; }
+
+        public static void CreateDirectory()
+        {
+            Directory.CreateDirectory(_path);
+        }
+        public static void CreateWorld(char[,] map)
+        {
+            Instance = new World
+            {
+                Map = map,
+                IsWall = new bool[map.GetLength(0), map.GetLength(1)],
+                MaxMapX = map.GetLength(0),
+                MaxMapY = map.GetLength(1)
+            };
+
+            for (int i = 0; i < map.GetLength(0); i++)
+            {
+                for (int j = 0; j < map.GetLength(1); j++)
+                {
+                    Instance.IsWall[i, j] = (map[i, j] == _wall);
+                }
+            }
+        }
+        public static void CreateWorld(string path)
+        {
+            var mapLine = File.ReadAllLines(path).ToArray();
+
+            Instance = new World
+            {
+                Map = new char[mapLine.Length, mapLine.Length],
+                IsWall = new bool[mapLine.Length, mapLine.Length],
+                MaxMapX = mapLine.Length,
+                MaxMapY = mapLine.Length
+            };
+
+            for (int i = 0; i < mapLine.Length; i++)
+            {
+                var line = mapLine[i].ToArray();
+                for (int j = 0; j < line.Length; j++)
+                {
+                    Instance.Map[i, j] = line[j];
+                    Instance.IsWall[i, j] = (line[j] == _wall);
+                }
+            }
+        }
         public void Draw()
         {
-            char[,] map = new char[_map.GetLength(0), _map.GetLength(1)];
+            if (Instance?.Map == null)
+            {
+                return;
+            }
 
-            Array.Copy(_map, map, _map.Length);
+            char[,] map = new char[Instance.Map.GetLength(0), Instance.Map.GetLength(1)];
+
+            Array.Copy(Instance.Map, map, Instance.Map.Length);
             Clear();
-            AddCharacterToMap(map);
+            AddObjectToMap(map);
             for (int i = 0; i < map.GetLength(0); i++)
             {
                 for (int j = 0; j < map.GetLength(1); j++)
@@ -40,14 +96,9 @@ namespace ConsoleTankGameOnline.Source
             Console.SetCursorPosition(0, 0);
         }
 
-        private void RemoveCharacter(CharacterBase character)
+        private void AddObjectToMap(char[,] map)
         {
-            _characters.Remove(character);
-        }
-
-        private void AddCharacterToMap(char[,] map)
-        {
-            foreach (var character in _characters.ToList())
+            foreach (var character in _objects.ToList())
             {
                 var shell = character.Weapon.Shell;
                 shell?.UpdatePosition();
@@ -63,7 +114,7 @@ namespace ConsoleTankGameOnline.Source
                         if (map[character.Position.X + i, character.Position.Y + j] == Shell.Symbol)
                         {
                             Listener.DestroyShell();
-                            RemoveCharacter(character);
+                            RemoveObject(character);
                             break;
                         }
 
@@ -77,7 +128,18 @@ namespace ConsoleTankGameOnline.Source
                 }
             }
         }
-
+        private void Listener_OnPlayerAdded(CharacterBase character, bool sendPacket)
+        {
+            AddObject(character);
+        }
+        private void AddObject(CharacterBase character)
+        {
+            _objects.Add(character);
+        }
+        private void RemoveObject(CharacterBase character)
+        {
+            _objects.Remove(character);
+        }
         private void Clear()
         {
             Console.SetCursorPosition(0, 0);
@@ -86,32 +148,6 @@ namespace ConsoleTankGameOnline.Source
                 Console.Write("\r{0}%");
             }
             Console.SetCursorPosition(0, 0);
-        }
-
-        private char[,] Map(string path)
-        {
-            var mapLine = File.ReadAllLines(path).ToArray();
-            var map = new char[mapLine.Length, mapLine.Length];
-
-            IsWall = new bool[mapLine.Length, mapLine.Length];
-
-            for (int i = 0; i < mapLine.Length; i++)
-            {
-                var line = mapLine[i].ToArray();
-                for (int j = 0; j < line.Length; j++)
-                {
-                    map[i, j] = line[j];
-                    IsWall[i, j] = (line[j] == _wall);
-                }
-            }
-
-            return map;
-        }
-
-        private void Listener_OnPlayerAdded(CharacterBase character, bool sendPacket)
-        {
-            character.World = this;
-            _characters.Add(character);
         }
     }
 }

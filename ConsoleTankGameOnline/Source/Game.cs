@@ -2,19 +2,21 @@
 {
     public class Game
     {
-        public Game(World world)
+        public Game()
         {
-            _world = world;
             AddEnemy();
         }
 
-        private readonly World _world;
-
         public void Play()
         {
-            _world.Draw();
+            if (World.Instance == null)
+            {
+                throw new Exception("THE WORLD DOESN'T EXIST!");
+            }
 
-            foreach (var character in _world.Characters)
+            World.Instance.Draw();
+
+            foreach (var character in World.Instance.Objects)
             {
                 if (character is Player player)
                 {

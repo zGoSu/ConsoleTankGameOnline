@@ -30,7 +30,7 @@ namespace ConsoleTankGameOnline.Source
                     break;
             }
 
-            if (World.IsWall[newPosition.X, newPosition.Y])
+            if (World.Instance.IsWall[newPosition.X, newPosition.Y])
             {
                 Listener.DestroyShell();
                 return;
