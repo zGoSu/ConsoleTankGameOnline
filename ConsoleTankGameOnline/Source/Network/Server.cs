@@ -7,13 +7,16 @@ namespace ConsoleTankGameOnline.Source.Network
 {
     public class Server : INetwork, IDisposable
     {
-        public Server(int port)
+        public Server()
         {
-            _listener = new TcpListener(IPAddress.Any, port);
+            _listener = new TcpListener(IPAddress.Any, 0);
+            _externalAddress = new HttpClient().GetStringAsync("http://ip1.dynupdate.no-ip.com:8245/").Result;
         }
 
         private readonly TcpListener _listener;
         private readonly List<Client> _clients = [];
+        private readonly string _externalAddress;
+
         public IEnumerable<Client> Clients => _clients;
 
         public async Task Start()
@@ -43,7 +46,7 @@ namespace ConsoleTankGameOnline.Source.Network
 
         public string GetCurrentAddress()
         {
-            return $"{((IPEndPoint)_listener.LocalEndpoint).Address}:{((IPEndPoint)_listener.LocalEndpoint).Port}";
+            return $"{_externalAddress}:{((IPEndPoint)_listener.LocalEndpoint).Port}";
         }
 
         public async Task SendPacket(PacketBase packet)

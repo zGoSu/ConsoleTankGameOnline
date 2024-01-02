@@ -114,10 +114,7 @@ namespace ConsoleTankGameOnline
 
             if (_network == null)
             {
-                Console.Write("ENTER CONNECTION PORT: ");
-                var port = Convert.ToInt32(Console.ReadLine());
-
-                _network = new Server(port);
+                _network = new Server();
                 _network.Start();
             }
 
