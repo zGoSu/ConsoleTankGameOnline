@@ -19,7 +19,7 @@ namespace ConsoleTankGameOnline.Source.Network
         {
             Listener.OnPlayerAdded += Listener_OnPlayerAdded;
             Listener.OnMove += Listener_OnMove;
-            Listener.OnShot += Listener_OnShot;
+            Listener.OnShellMove += Listener_OnShellMove;
             Listener.OnDie += Listener_OnDie;
         }
 
@@ -53,16 +53,6 @@ namespace ConsoleTankGameOnline.Source.Network
             SendPacket(new Move(objectName, position));
         }
 
-        private void Listener_OnShot(string objectName, bool sendPacket)
-        {
-            if (!sendPacket)
-            {
-                return;
-            }
-
-            SendPacket(new Shot(objectName));
-        }
-
         private void Listener_OnDie(CharacterBase character, bool sendPacket)
         {
             if (!sendPacket)
@@ -71,6 +61,16 @@ namespace ConsoleTankGameOnline.Source.Network
             }
 
             SendPacket(new Die(character));
+        }
+
+        private void Listener_OnShellMove(string objectName, Position position, bool sendPacket)
+        {
+            if (!sendPacket)
+            {
+                return;
+            }
+
+            SendPacket(new ShellMove(objectName, position));
         }
     }
 }

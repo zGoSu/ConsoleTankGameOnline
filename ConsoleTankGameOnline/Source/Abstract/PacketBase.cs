@@ -25,7 +25,7 @@ namespace ConsoleTankGameOnline.Source.Abstract
                 PacketEnum.WorldInfo => JsonConvert.DeserializeObject<WorldInfo>(json),
                 PacketEnum.PlayerInfo => JsonConvert.DeserializeObject<PlayerInfo>(json),
                 PacketEnum.Move => JsonConvert.DeserializeObject<Move>(json),
-                PacketEnum.Shot => JsonConvert.DeserializeObject<Shot>(json),
+                PacketEnum.ShellMove => JsonConvert.DeserializeObject<ShellMove>(json),
                 PacketEnum.Die => JsonConvert.DeserializeObject<Die>(json),
                 _ => JsonConvert.DeserializeObject<PacketBase>(json),
             };
@@ -45,8 +45,9 @@ namespace ConsoleTankGameOnline.Source.Abstract
                     var character = (Move)this;
                     Listener.MoveTo(character.ObjectName, character.Position, false);
                     break;
-                case PacketEnum.Shot:
-                    Listener.Shot(((Shot)this).Name, false);
+                case PacketEnum.ShellMove:
+                    var shell = (ShellMove)this;
+                    Listener.ShellMoveTo(shell.Name, shell.Position, false);
                     break;
                 case PacketEnum.Die:
                     Listener.Die(((Die)this).Target, false);

@@ -8,6 +8,7 @@ namespace ConsoleTankGameOnline.Source
         {
             _character = character;
             Listener.OnShellDestroyed += Listener_OnShellDestroyed;
+            Listener.OnShellMove += Listener_OnShellMove;
         }
 
         private readonly CharacterBase _character;
@@ -57,10 +58,32 @@ namespace ConsoleTankGameOnline.Source
                 Shell = null;
             }
         }
+        private void Listener_OnShellMove(string objectName, Structure.Position position, bool sendPacket)
+        {
+            if (sendPacket)
+            {
+                return;
+            }
+
+            var attacker = World.Instance.Objects[objectName];
+
+            if (attacker != _character)
+            {
+                return;
+            }
+
+            if (!IsShoted)
+            {
+                Shell = new Shell(attacker);
+            }
+
+            Shell.Position = position;
+        }
 
         public void Dispose()
         {
             Listener.OnShellDestroyed -= Listener_OnShellDestroyed;
+            Listener.OnShellMove -= Listener_OnShellMove;
         }
     }
 }

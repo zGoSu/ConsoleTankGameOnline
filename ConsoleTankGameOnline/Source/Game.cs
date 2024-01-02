@@ -16,7 +16,7 @@
 
             World.Instance.Draw();
 
-            foreach (var character in World.Instance.Objects)
+            foreach (var character in World.Instance.Objects.Values)
             {
                 if (character is Player player)
                 {

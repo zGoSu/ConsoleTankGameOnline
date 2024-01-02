@@ -10,7 +10,6 @@ namespace ConsoleTankGameOnline.Source
         {
             Listener.OnPlayerAdded += Listener_OnPlayerAdded;
             Listener.OnMove += Listener_OnMove;
-            Listener.OnShot += Listener_OnShot;
             Listener.OnDie += Listener_OnDie;
         }
 
@@ -22,7 +21,7 @@ namespace ConsoleTankGameOnline.Source
         public static World? Instance { get; private set; }
 
         [JsonIgnore]
-        public IEnumerable<CharacterBase> Objects => _objects.Values;
+        public IDictionary<string, CharacterBase> Objects => _objects;
         [JsonIgnore]
         public static IEnumerable<string> Locations = Directory.GetFiles(_path);
         [JsonIgnore]
@@ -102,7 +101,7 @@ namespace ConsoleTankGameOnline.Source
 
         private void AddObjectToMap(char[,] map)
         {
-            foreach (var character in Objects.ToList())
+            foreach (var character in Objects.Values.ToList())
             {
                 var shell = character.Weapon.Shell;
                 shell?.UpdatePosition();
@@ -153,22 +152,6 @@ namespace ConsoleTankGameOnline.Source
             player.Position = position;
             player.Rotation();
 
-        }
-        private void Listener_OnShot(string objectName, bool sendPacket)
-        {
-            if (sendPacket)
-            {
-                return;
-            }
-
-            var player = _objects[objectName];
-
-            if (player.Weapon.IsShoted)
-            {
-                return;
-            }
-
-            player.Weapon.Shot();
         }
 
         private void Listener_OnDie(CharacterBase character, bool sendPacket)

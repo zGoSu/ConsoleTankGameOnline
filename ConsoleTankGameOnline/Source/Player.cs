@@ -47,7 +47,6 @@ namespace ConsoleTankGameOnline.Source
                     break;
                 case ConsoleKey.Spacebar:
                     Weapon.Shot();
-                    Listener.Shot(Name, true);
                     break;
                 default:
                     break;

@@ -17,9 +17,7 @@ namespace ConsoleTankGameOnline.Source
 
         public delegate void MoveHandler(string objectName, Position position, bool sendPacket);
         public static event MoveHandler? OnMove;
-
-        public delegate void ShellHandler(string objectName, bool sendPacket);
-        public static event ShellHandler? OnShot;
+        public static event MoveHandler? OnShellMove;
 
         public static void DestroyShell(CharacterBase owner)
         {
@@ -41,14 +39,14 @@ namespace ConsoleTankGameOnline.Source
             OnMove?.Invoke(objectName, position, sendPacket);
         }
 
-        public static void Shot(string objectName, bool sendPacket)
-        {
-            OnShot?.Invoke(objectName, sendPacket);
-        }
-
         public static void Die(CharacterBase target, bool sendPacket)
         {
             OnDie?.Invoke(target, sendPacket);
+        }
+
+        public static void ShellMoveTo(string ownerName, Position shellPosition, bool sendPacket)
+        {
+            OnShellMove?.Invoke(ownerName, shellPosition, sendPacket);
         }
     }
 }

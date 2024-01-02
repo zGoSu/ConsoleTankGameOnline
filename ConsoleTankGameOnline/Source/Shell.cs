@@ -44,11 +44,12 @@ namespace ConsoleTankGameOnline.Source
             }
 
             Position = newPosition;
+            Listener.ShellMoveTo(_owner.Name, Position, true);
         }
 
         private bool Killed()
         {
-            foreach (var enemy in World.Instance.Objects.Where(e => e != _owner))
+            foreach (var enemy in World.Instance.Objects.Where(e => !e.Key.Equals(_owner.Name)).Select(e => e.Value))
             {
                 if ((Position.X >= enemy.Position.X) && (Position.X <= enemy.Position.X + enemy.Height)
                     && (Position.Y >= enemy.Position.Y) && (Position.Y <= enemy.Position.Y + enemy.Width))

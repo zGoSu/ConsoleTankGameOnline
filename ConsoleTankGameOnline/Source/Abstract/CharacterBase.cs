@@ -82,7 +82,7 @@ namespace ConsoleTankGameOnline.Source.Interface
 
         protected bool IsEnemyNearMe(Position newPosition)
         {
-            foreach (var enemyPosition in World.Instance.Objects.Where(c => c != this).Select(s => s.Position))
+            foreach (var enemyPosition in World.Instance.Objects.Where(c => !c.Key.Equals(Name)).Select(s => s.Value.Position))
             {
                 if ((newPosition.Y < enemyPosition.Y + Width) && (newPosition.Y > enemyPosition.Y - Width)
                     && (newPosition.X < enemyPosition.X + Height) && (newPosition.X > enemyPosition.X - Height))
