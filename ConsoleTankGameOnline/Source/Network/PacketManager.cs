@@ -21,6 +21,7 @@ namespace ConsoleTankGameOnline.Source.Network
             Listener.OnMove += Listener_OnMove;
             Listener.OnShellMove += Listener_OnShellMove;
             Listener.OnDie += Listener_OnDie;
+            Listener.OnShellDestroyed += Listener_OnShellDestroyed;
         }
 
         public void SendPacket(PacketBase packet)
@@ -71,6 +72,16 @@ namespace ConsoleTankGameOnline.Source.Network
             }
 
             SendPacket(new ShellMove(objectName, position));
+        }
+
+        private void Listener_OnShellDestroyed(string ownerName, bool sendPacket)
+        {
+            if (!sendPacket)
+            {
+                return;
+            }
+
+            SendPacket(new ShellDestroy(ownerName));
         }
     }
 }

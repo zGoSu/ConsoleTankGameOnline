@@ -39,7 +39,7 @@ namespace ConsoleTankGameOnline.Source
 
             if (World.Instance.IsWall[newPosition.X, newPosition.Y] || Killed())
             {
-                Listener.DestroyShell(_owner);
+                Listener.ShellDestroy(_owner.Name, true);
                 return;
             }
 

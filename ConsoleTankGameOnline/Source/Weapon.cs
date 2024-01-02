@@ -51,9 +51,9 @@ namespace ConsoleTankGameOnline.Source
             };
         }
 
-        private void Listener_OnShellDestroyed(CharacterBase owner)
+        private void Listener_OnShellDestroyed(string ownerName, bool sendPacket)
         {
-            if (_character == owner)
+            if (_character.Name.Equals(ownerName))
             {
                 Shell = null;
             }
