@@ -12,7 +12,7 @@ namespace ConsoleTankGameOnline.Source.Network
             EventInitialization();
         }
 
-        public readonly INetwork? _network;
+        private readonly INetwork? _network;
 
         private void EventInitialization()
         {

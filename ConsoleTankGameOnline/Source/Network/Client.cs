@@ -38,15 +38,17 @@ namespace ConsoleTankGameOnline.Source.Network
 
                 if ((_reader == null) || (Writer == null))
                 {
-                    throw new Exception("Неполучилось создать поток на чтение и/или запись.");
+                    throw new Exception("IT FAILED TO CREATE A FLOW FOR READING AND/OR WRITING.");
                 }
 
                 Task.Run(ReceivePacket);
 
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                Console.WriteLine($"Client.Start: {ex.Message}");
+                Console.WriteLine("COULD NOT CONNECT TO THE SERVER.\n" +
+                    "CHECK THAT THE SERVER ADDRESS IS COMPLETED\nCORRECTLY AND TRY AGAIN.");
+                Thread.Sleep(1000);
             }
         }
 

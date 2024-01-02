@@ -3,6 +3,7 @@ using ConsoleTankGameOnline.Source.Enum;
 using ConsoleTankGameOnline.Source.Interface;
 using ConsoleTankGameOnline.Source.Network;
 using ConsoleTankGameOnline.Source.Network.Packages;
+using System.Net;
 
 namespace ConsoleTankGameOnline
 {
@@ -137,23 +138,43 @@ namespace ConsoleTankGameOnline
                 return;
             }
 
-            if (_network == null)
+            if (_packetManager == null)
             {
-                Console.Write("ENTER SERVER HOST: ");
-                var host = Console.ReadLine();
-                Console.Write("ENTER SERVER PORT: ");
-                var port = Convert.ToInt32(Console.ReadLine());
+                IPAddress? ip = null;
+                int port = 0;
 
-                _network = new Client(host, port);
+                do
+                {
+                    if (ip == null)
+                    {
+                        Console.Write("ENTER SERVER HOST (127.0.0.1): ");
+                        if (!IPAddress.TryParse(Console.ReadLine(), out ip))
+                        {
+                            Console.Clear();
+                            Console.WriteLine("INVALID IP ADDRESS. TRY AGAIN.");
+                            continue;
+                        }
+                    }
+
+                    Console.Write("ENTER SERVER PORT (7777): ");
+                    if (!int.TryParse(Console.ReadLine(), out port))
+                    {
+                        Console.Clear();
+                        Console.WriteLine("INVALID PORT. TRY AGAIN.");
+                        continue;
+                    }
+                } while ((ip == null) || (port == 0));
+
+                _network = new Client(ip.ToString(), port);
                 _network.Start();
             }
 
-            _packetManager = new PacketManager(_network);
-
             if (((Client)_network).IsConnected())
             {
+                _packetManager = new PacketManager(_network);
                 _step = GameStepEnum.SelectPlayer;
             }
+            Console.Clear();
         }
 
         private void SelectMap()
