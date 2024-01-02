@@ -172,7 +172,14 @@ namespace ConsoleTankGameOnline.Source
                 return;
             }
 
-            _objects[objectName].Weapon.Shot();
+            var player = _objects[objectName];
+
+            if (player.Weapon.IsShoted)
+            {
+                return;
+            }
+
+            player.Weapon.Shot();
         }
     }
 }

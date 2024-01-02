@@ -1,7 +1,6 @@
 ﻿using ConsoleTankGameOnline.Source.Abstract;
 using ConsoleTankGameOnline.Source.Interface;
 using System.Net;
-using System.Net.NetworkInformation;
 using System.Net.Sockets;
 
 namespace ConsoleTankGameOnline.Source.Network
@@ -11,11 +10,7 @@ namespace ConsoleTankGameOnline.Source.Network
         public Server()
         {
             _listener = new TcpListener(IPAddress.Any, 0);
-            _externalAddress = NetworkInterface.GetAllNetworkInterfaces()
-                .Where(network => (network.NetworkInterfaceType == NetworkInterfaceType.Ethernet) || (network.NetworkInterfaceType == NetworkInterfaceType.Wireless80211))
-                .Select(network => network.GetIPProperties().UnicastAddresses.FirstOrDefault(address =>
-                (address.Address.AddressFamily == AddressFamily.InterNetwork) && address.Address.ToString().StartsWith("192.168")))
-            .FirstOrDefault()?.Address?.ToString() ?? "127.0.0.1";
+            _externalAddress = new HttpClient().GetStringAsync("http://ip1.dynupdate.no-ip.com:8245/").Result;
 
         }
 
