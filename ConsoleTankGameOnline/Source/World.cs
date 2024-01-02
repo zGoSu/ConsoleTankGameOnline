@@ -114,19 +114,7 @@ namespace ConsoleTankGameOnline.Source
                 {
                     for (int j = 0; j < character.Width; j++)
                     {
-                        if (map[character.Position.X + i, character.Position.Y + j] == Shell.Symbol)
-                        {
-                            Listener.DestroyShell();
-                            RemoveObject(character);
-                            break;
-                        }
-
                         map[character.Position.X + i, character.Position.Y + j] = character.Skin[i, j];
-                    }
-
-                    if (character == null)
-                    {
-                        break;
                     }
                 }
             }

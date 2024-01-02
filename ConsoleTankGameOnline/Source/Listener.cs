@@ -5,7 +5,7 @@ namespace ConsoleTankGameOnline.Source
 {
     public class Listener
     {
-        public delegate void ShellDestroyHandler();
+        public delegate void ShellDestroyHandler(CharacterBase owner);
         public static event ShellDestroyHandler? OnShellDestroyed;
 
         public delegate void WorldHandler(char[,] map);
@@ -20,9 +20,9 @@ namespace ConsoleTankGameOnline.Source
         public delegate void ShellHandler(string objectName, bool sendPacket);
         public static event ShellHandler? OnShot;
 
-        public static void DestroyShell()
+        public static void DestroyShell(CharacterBase owner)
         {
-            OnShellDestroyed?.Invoke();
+            OnShellDestroyed?.Invoke(owner);
         }
 
         public static void CreateWorld(char[,] map)

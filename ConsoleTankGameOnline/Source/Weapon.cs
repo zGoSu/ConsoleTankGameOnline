@@ -44,15 +44,18 @@ namespace ConsoleTankGameOnline.Source
                     break;
             }
 
-            Shell = new Shell
+            Shell = new Shell(_character)
             {
                 Position = position
             };
         }
 
-        private void Listener_OnShellDestroyed()
+        private void Listener_OnShellDestroyed(CharacterBase owner)
         {
-            Shell = null;
+            if (_character == owner)
+            {
+                Shell = null;
+            }
         }
 
         public void Dispose()

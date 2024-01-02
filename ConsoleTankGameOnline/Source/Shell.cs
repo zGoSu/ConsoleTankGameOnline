@@ -1,10 +1,17 @@
 ﻿using ConsoleTankGameOnline.Source.Enum;
+using ConsoleTankGameOnline.Source.Interface;
 using ConsoleTankGameOnline.Source.Structure;
 
 namespace ConsoleTankGameOnline.Source
 {
     public class Shell
     {
+        public Shell(CharacterBase owner)
+        {
+            _owner = owner;
+        }
+
+        private readonly CharacterBase _owner;
         public const char Symbol = '•';
         public Position Position { get; set; }
 
@@ -32,7 +39,7 @@ namespace ConsoleTankGameOnline.Source
 
             if (World.Instance.IsWall[newPosition.X, newPosition.Y])
             {
-                Listener.DestroyShell();
+                Listener.DestroyShell(_owner);
                 return;
             }
 
