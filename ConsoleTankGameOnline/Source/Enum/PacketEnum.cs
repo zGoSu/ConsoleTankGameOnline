@@ -3,6 +3,7 @@
     public enum PacketEnum : byte
     {
         WorldInfo = 1,
-        PlayerInfo = 2
+        PlayerInfo = 2,
+        Move = 3
     }
 }

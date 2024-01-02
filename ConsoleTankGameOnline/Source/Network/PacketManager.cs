@@ -1,6 +1,7 @@
 ﻿using ConsoleTankGameOnline.Source.Abstract;
 using ConsoleTankGameOnline.Source.Interface;
 using ConsoleTankGameOnline.Source.Network.Packages;
+using ConsoleTankGameOnline.Source.Structure;
 
 namespace ConsoleTankGameOnline.Source.Network
 {
@@ -17,7 +18,9 @@ namespace ConsoleTankGameOnline.Source.Network
         private void EventInitialization()
         {
             Listener.OnPlayerAdded += Listener_OnPlayerAdded;
+            Listener.OnMove += Listener_OnMove;
         }
+
         public void SendPacket(PacketBase packet)
         {
             if (_network == null)
@@ -38,5 +41,14 @@ namespace ConsoleTankGameOnline.Source.Network
             SendPacket(new PlayerInfo(character));
         }
 
+        private void Listener_OnMove(string objectName, Position position, bool sendPacket)
+        {
+            if (!sendPacket)
+            {
+                return;
+            }
+
+            SendPacket(new Move(objectName, position));
+        }
     }
 }

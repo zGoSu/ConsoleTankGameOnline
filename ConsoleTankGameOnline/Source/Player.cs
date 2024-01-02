@@ -56,6 +56,7 @@ namespace ConsoleTankGameOnline.Source
             {
                 Position = newPosition;
                 Rotation(keyInfo.Key);
+                Listener.MoveTo(Name, Position, true);
             }
         }
     }

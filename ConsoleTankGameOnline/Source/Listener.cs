@@ -1,4 +1,5 @@
 ﻿using ConsoleTankGameOnline.Source.Interface;
+using ConsoleTankGameOnline.Source.Structure;
 
 namespace ConsoleTankGameOnline.Source
 {
@@ -13,6 +14,9 @@ namespace ConsoleTankGameOnline.Source
         public delegate void PlayerHandler(CharacterBase character, bool sendPacket);
         public static event PlayerHandler? OnPlayerAdded;
 
+        public delegate void MoveHandler(string objectName, Position position, bool sendPacket);
+        public static event MoveHandler? OnMove;
+
         public static void DestroyShell()
         {
             OnShellDestroyed?.Invoke();
@@ -26,6 +30,11 @@ namespace ConsoleTankGameOnline.Source
         public static void AddPlayer(CharacterBase character, bool sendPacket)
         {
             OnPlayerAdded?.Invoke(character, sendPacket);
+        }
+
+        public static void MoveTo(string objectName, Position position, bool sendPacket)
+        {
+            OnMove?.Invoke(objectName, position, sendPacket);
         }
     }
 }

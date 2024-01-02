@@ -1,12 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using ConsoleTankGameOnline.Source.Abstract;
+using ConsoleTankGameOnline.Source.Structure;
 
 namespace ConsoleTankGameOnline.Source.Network.Packages
 {
-    internal class Move
+    public class Move : PacketBase
     {
+        public Move(string objectName, Position position) 
+        {
+            ID = Enum.PacketEnum.Move;
+            ObjectName = objectName;
+            Position = position;
+        }
+
+        public string ObjectName { get; set; }
+        public Position Position { get; set; }
     }
 }

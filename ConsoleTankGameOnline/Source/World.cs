@@ -1,4 +1,5 @@
 ﻿using ConsoleTankGameOnline.Source.Interface;
+using ConsoleTankGameOnline.Source.Structure;
 using Newtonsoft.Json;
 
 namespace ConsoleTankGameOnline.Source
@@ -8,9 +9,10 @@ namespace ConsoleTankGameOnline.Source
         public World()
         {
             Listener.OnPlayerAdded += Listener_OnPlayerAdded;
+            Listener.OnMove += Listener_OnMove;
         }
 
-        private readonly List<CharacterBase> _objects = [];
+        private readonly Dictionary<string, CharacterBase> _objects = [];
         private const char _wall = '■';
         private const string _path = "Resurce/Maps";
 
@@ -18,7 +20,7 @@ namespace ConsoleTankGameOnline.Source
         public static World? Instance { get; private set; }
 
         [JsonIgnore]
-        public IEnumerable<CharacterBase> Objects => _objects;
+        public IEnumerable<CharacterBase> Objects => _objects.Values;
         [JsonIgnore]
         public static IEnumerable<string> Locations = Directory.GetFiles(_path);
         [JsonIgnore]
@@ -98,7 +100,7 @@ namespace ConsoleTankGameOnline.Source
 
         private void AddObjectToMap(char[,] map)
         {
-            foreach (var character in _objects.ToList())
+            foreach (var character in Objects.ToList())
             {
                 var shell = character.Weapon.Shell;
                 shell?.UpdatePosition();
@@ -132,13 +134,26 @@ namespace ConsoleTankGameOnline.Source
         {
             AddObject(character);
         }
+        private void Listener_OnMove(string objectName, Position position, bool sendPacket)
+        {
+            if (sendPacket)
+            {
+                return;
+            }
+
+            var player = _objects[objectName];
+
+            player.Position = position;
+            player.Rotation();
+            
+        }
         private void AddObject(CharacterBase character)
         {
-            _objects.Add(character);
+            _objects.Add(character.Name, character);
         }
         private void RemoveObject(CharacterBase character)
         {
-            _objects.Remove(character);
+            _objects.Remove(character.Name);
         }
         private void Clear()
         {

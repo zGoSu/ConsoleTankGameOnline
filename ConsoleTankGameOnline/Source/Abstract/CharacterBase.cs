@@ -75,6 +75,11 @@ namespace ConsoleTankGameOnline.Source.Interface
             }
         }
 
+        public void Rotation()
+        {
+            Skin = Skins[Position.Rotation];
+        }
+
         protected bool IsEnemyNearMe(Position newPosition)
         {
             foreach (var enemyPosition in World.Instance.Objects.Where(c => c != this).Select(s => s.Position))
