@@ -31,21 +31,24 @@
                 File.Delete(file);
             }
 
-            File.Create(file);
+            File.Create(file).Close();
         }
 
         private void SaveFile()
         {
-            using var stream = new StreamWriter($"{Directory.GetCurrentDirectory()}\\{_file}", true);
-
-            while (_errors.Count > 0)
+            while (true)
             {
-                var error = _errors.Dequeue();
+                using var stream = new StreamWriter($"{Directory.GetCurrentDirectory()}\\{_file}", true);
 
-                stream.WriteLine(error);
+                while (_errors.Count > 0)
+                {
+                    var error = _errors.Dequeue();
+
+                    stream.Write(error);
+                }
+
+                Task.Delay(1000);
             }
-
-            Task.Delay(1000);
         }
     }
 }
