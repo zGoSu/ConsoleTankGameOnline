@@ -1,15 +1,20 @@
 ﻿using ConsoleTankGameOnline.Source.Abstract;
+using ConsoleTankGameOnline.Source.Interface;
+using Newtonsoft.Json;
 
 namespace ConsoleTankGameOnline.Source.Network.Packages
 {
     public class Die : PacketBase
     {
-        public Die(string targetName) 
+        public Die(CharacterBase target)
         {
             ID = Enum.PacketEnum.Die;
-            TargetName = targetName;
+            Target = target;
+            TargetName = target.Name;
         }
 
-        public string TargetName;
+        public string TargetName { get; set; }
+        [JsonIgnore]
+        public CharacterBase Target { get; private set; }
     }
 }

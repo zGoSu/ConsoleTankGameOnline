@@ -5,6 +5,7 @@
         WorldInfo = 1,
         PlayerInfo = 2,
         Move = 3,
-        Shot = 4
+        Shot = 4,
+        Die = 5
     }
 }
