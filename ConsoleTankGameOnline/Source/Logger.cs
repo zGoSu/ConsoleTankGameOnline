@@ -19,7 +19,9 @@
         }
         public void Write(Exception exception)
         {
-            Write($"{exception.Message}\nStackTrace: {exception.StackTrace}");
+            var strackTrace = (exception.InnerException ?? exception).StackTrace;
+
+            Write($"{exception.Message}\nStackTrace: {strackTrace}");
         }
 
         private void CreateFile()
