@@ -19,6 +19,7 @@ namespace ConsoleTankGameOnline.Source.Network
         {
             Listener.OnPlayerAdded += Listener_OnPlayerAdded;
             Listener.OnMove += Listener_OnMove;
+            Listener.OnShot += Listener_OnShot;
         }
 
         public void SendPacket(PacketBase packet)
@@ -49,6 +50,16 @@ namespace ConsoleTankGameOnline.Source.Network
             }
 
             SendPacket(new Move(objectName, position));
+        }
+
+        private void Listener_OnShot(string objectName, bool sendPacket)
+        {
+            if (!sendPacket)
+            {
+                return;
+            }
+
+            SendPacket(new Shot(objectName));
         }
     }
 }

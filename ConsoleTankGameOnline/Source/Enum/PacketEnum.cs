@@ -4,6 +4,7 @@
     {
         WorldInfo = 1,
         PlayerInfo = 2,
-        Move = 3
+        Move = 3,
+        Shot = 4
     }
 }

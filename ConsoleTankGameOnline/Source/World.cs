@@ -10,6 +10,7 @@ namespace ConsoleTankGameOnline.Source
         {
             Listener.OnPlayerAdded += Listener_OnPlayerAdded;
             Listener.OnMove += Listener_OnMove;
+            Listener.OnShot += Listener_OnShot;
         }
 
         private readonly Dictionary<string, CharacterBase> _objects = [];
@@ -130,23 +131,6 @@ namespace ConsoleTankGameOnline.Source
                 }
             }
         }
-        private void Listener_OnPlayerAdded(CharacterBase character, bool sendPacket)
-        {
-            AddObject(character);
-        }
-        private void Listener_OnMove(string objectName, Position position, bool sendPacket)
-        {
-            if (sendPacket)
-            {
-                return;
-            }
-
-            var player = _objects[objectName];
-
-            player.Position = position;
-            player.Rotation();
-            
-        }
         private void AddObject(CharacterBase character)
         {
             _objects.Add(character.Name, character);
@@ -163,6 +147,32 @@ namespace ConsoleTankGameOnline.Source
                 Console.Write("\r{0}%");
             }
             Console.SetCursorPosition(0, 0);
+        }
+        private void Listener_OnPlayerAdded(CharacterBase character, bool sendPacket)
+        {
+            AddObject(character);
+        }
+        private void Listener_OnMove(string objectName, Position position, bool sendPacket)
+        {
+            if (sendPacket)
+            {
+                return;
+            }
+
+            var player = _objects[objectName];
+
+            player.Position = position;
+            player.Rotation();
+
+        }
+        private void Listener_OnShot(string objectName, bool sendPacket)
+        {
+            if (sendPacket)
+            {
+                return;
+            }
+
+            _objects[objectName].Weapon.Shot();
         }
     }
 }

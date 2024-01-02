@@ -17,6 +17,9 @@ namespace ConsoleTankGameOnline.Source
         public delegate void MoveHandler(string objectName, Position position, bool sendPacket);
         public static event MoveHandler? OnMove;
 
+        public delegate void ShellHandler(string objectName, bool sendPacket);
+        public static event ShellHandler? OnShot;
+
         public static void DestroyShell()
         {
             OnShellDestroyed?.Invoke();
@@ -35,6 +38,11 @@ namespace ConsoleTankGameOnline.Source
         public static void MoveTo(string objectName, Position position, bool sendPacket)
         {
             OnMove?.Invoke(objectName, position, sendPacket);
+        }
+
+        public static void Shot(string objectName, bool sendPacket)
+        {
+            OnShot?.Invoke(objectName, sendPacket);
         }
     }
 }
