@@ -246,9 +246,9 @@ namespace ConsoleTankGameOnline
             {
                 while (World.Instance == null)
                 {
-                    Console.Clear();
                     Console.WriteLine("WAITING FOR WORLD CREATION BY SERVER...");
                     Thread.Sleep(1000);
+                    Console.Clear();
                 }
 
                 Console.WriteLine($"SELECT TANK:");
