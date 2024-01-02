@@ -50,7 +50,8 @@ namespace ConsoleTankGameOnline.Source.Abstract
                     Listener.ShellMoveTo(shell.Name, shell.Position, false);
                     break;
                 case PacketEnum.Die:
-                    Listener.Die(((Die)this).Target, false);
+                    var target = World.Instance.Objects[((Die)this).TargetName];
+                    Listener.Die(target, false);
                     break;
                 default:
                     break;

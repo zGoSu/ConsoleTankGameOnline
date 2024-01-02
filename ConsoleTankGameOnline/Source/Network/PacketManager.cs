@@ -60,7 +60,7 @@ namespace ConsoleTankGameOnline.Source.Network
                 return;
             }
 
-            SendPacket(new Die(character));
+            SendPacket(new Die(character.Name));
         }
 
         private void Listener_OnShellMove(string objectName, Position position, bool sendPacket)
