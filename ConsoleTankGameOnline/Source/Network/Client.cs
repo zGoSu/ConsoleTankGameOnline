@@ -44,10 +44,11 @@ namespace ConsoleTankGameOnline.Source.Network
                 Task.Run(ReceivePacket);
 
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 Console.WriteLine("COULD NOT CONNECT TO THE SERVER.\n" +
                     "CHECK THAT THE SERVER ADDRESS IS COMPLETED\nCORRECTLY AND TRY AGAIN.");
+                Logger.Instance.Write(ex);
                 Thread.Sleep(1000);
             }
         }
@@ -73,6 +74,7 @@ namespace ConsoleTankGameOnline.Source.Network
             {
                 Console.Clear();
                 Console.WriteLine(ex);
+                Logger.Instance.Write(ex);
                 Thread.Sleep(1000);
             }
             finally
