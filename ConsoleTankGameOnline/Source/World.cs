@@ -11,6 +11,7 @@ namespace ConsoleTankGameOnline.Source
             Listener.OnPlayerAdded += Listener_OnPlayerAdded;
             Listener.OnMove += Listener_OnMove;
             Listener.OnShot += Listener_OnShot;
+            Listener.OnDie += Listener_OnDie;
         }
 
         private readonly Dictionary<string, CharacterBase> _objects = [];
@@ -168,6 +169,11 @@ namespace ConsoleTankGameOnline.Source
             }
 
             player.Weapon.Shot();
+        }
+
+        private void Listener_OnDie(CharacterBase character, bool sendPacket)
+        {
+            RemoveObject(character);
         }
     }
 }

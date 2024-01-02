@@ -37,13 +37,28 @@ namespace ConsoleTankGameOnline.Source
                     break;
             }
 
-            if (World.Instance.IsWall[newPosition.X, newPosition.Y])
+            if (World.Instance.IsWall[newPosition.X, newPosition.Y] || Killed())
             {
                 Listener.DestroyShell(_owner);
                 return;
             }
 
             Position = newPosition;
+        }
+
+        private bool Killed()
+        {
+            foreach (var enemy in World.Instance.Objects.Where(e => e != _owner))
+            {
+                if ((Position.X >= enemy.Position.X) && (Position.X <= enemy.Position.X + enemy.Height)
+                    && (Position.Y >= enemy.Position.Y) && (Position.Y <= enemy.Position.Y + enemy.Width))
+                {
+                    Listener.Die(enemy, true);
+                    return true;
+                }
+            }
+
+            return false;
         }
     }
 }

@@ -13,6 +13,7 @@ namespace ConsoleTankGameOnline.Source
 
         public delegate void PlayerHandler(CharacterBase character, bool sendPacket);
         public static event PlayerHandler? OnPlayerAdded;
+        public static event PlayerHandler? OnDie;
 
         public delegate void MoveHandler(string objectName, Position position, bool sendPacket);
         public static event MoveHandler? OnMove;
@@ -43,6 +44,11 @@ namespace ConsoleTankGameOnline.Source
         public static void Shot(string objectName, bool sendPacket)
         {
             OnShot?.Invoke(objectName, sendPacket);
+        }
+
+        public static void Die(CharacterBase target, bool sendPacket)
+        {
+            OnDie?.Invoke(target, sendPacket);
         }
     }
 }
